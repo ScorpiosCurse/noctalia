@@ -74,7 +74,6 @@ private:
   InputArea* addCardOverlay(Flex& card, std::function<void()> onActivate, CardOverlayOptions options);
   void layoutCardOverlays();
   void syncWallpaperBackground(Renderer& renderer);
-  [[nodiscard]] std::string wallpaperMonitor() const;
   void ensureWallpaperThumbnail(const std::string& path, int targetPx);
   void startCrispFade();
   void cancelCrispFade();

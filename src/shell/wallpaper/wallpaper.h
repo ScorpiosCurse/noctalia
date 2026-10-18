@@ -10,7 +10,6 @@
 #include <functional>
 #include <memory>
 #include <string>
-#include <string_view>
 #include <unordered_set>
 #include <vector>
 
@@ -60,9 +59,9 @@ public:
   [[nodiscard]] bool ownsSurface(wl_surface* surface) const noexcept;
   bool onPointerEvent(const PointerEvent& event);
 
-  // A missing connector uses the first available image without changing the caller's preference.
-  [[nodiscard]] TextureHandle currentTexture(std::string_view connector = {}) const;
-  [[nodiscard]] std::string currentPath(std::string_view connector = {}) const;
+  // Prefer a landscape image; otherwise use the first available image.
+  [[nodiscard]] TextureHandle currentTexture() const;
+  [[nodiscard]] std::string currentPath() const;
 
   // Emits whenever the displayed wallpaper (path/texture) changes, including
   // automation rotation and transition completion. Lets consumers pre-warm
@@ -70,7 +69,7 @@ public:
   [[nodiscard]] Signal<>& changed() noexcept { return m_changed; }
 
 private:
-  [[nodiscard]] const WallpaperInstance* currentInstance(std::string_view connector) const;
+  [[nodiscard]] const WallpaperInstance* currentInstance() const;
   enum class TransitionRedirect {
     Unrelated,
     AlreadyTargeting,

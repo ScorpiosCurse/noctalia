@@ -312,29 +312,30 @@ Wallpaper::~Wallpaper() {
   }
 }
 
-const WallpaperInstance* Wallpaper::currentInstance(std::string_view connector) const {
-  if (!connector.empty()) {
-    for (const auto& inst : m_instances) {
-      if (inst->connectorName == connector) {
-        return inst->currentImage.texture().valid() ? inst.get() : nullptr;
-      }
-    }
-  }
+const WallpaperInstance* Wallpaper::currentInstance() const {
+  const WallpaperInstance* firstAvailable = nullptr;
   for (const auto& inst : m_instances) {
-    if (inst->currentImage.texture().valid() && !inst->currentPath.empty()) {
+    const TextureHandle texture = inst->currentImage.texture();
+    if (!texture.valid() || inst->currentPath.empty()) {
+      continue;
+    }
+    if (texture.sourceWidth > texture.sourceHeight) {
       return inst.get();
     }
+    if (firstAvailable == nullptr) {
+      firstAvailable = inst.get();
+    }
   }
-  return nullptr;
+  return firstAvailable;
 }
 
-TextureHandle Wallpaper::currentTexture(std::string_view connector) const {
-  const WallpaperInstance* inst = currentInstance(connector);
+TextureHandle Wallpaper::currentTexture() const {
+  const WallpaperInstance* inst = currentInstance();
   return inst != nullptr ? inst->currentImage.texture() : TextureHandle{};
 }
 
-std::string Wallpaper::currentPath(std::string_view connector) const {
-  const WallpaperInstance* inst = currentInstance(connector);
+std::string Wallpaper::currentPath() const {
+  const WallpaperInstance* inst = currentInstance();
   return inst != nullptr ? inst->currentPath : std::string{};
 }
 
