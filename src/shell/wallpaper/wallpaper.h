@@ -69,7 +69,6 @@ public:
   [[nodiscard]] Signal<>& changed() noexcept { return m_changed; }
 
 private:
-  [[nodiscard]] const WallpaperInstance* currentInstance() const;
   enum class TransitionRedirect {
     Unrelated,
     AlreadyTargeting,
@@ -88,6 +87,7 @@ private:
     Unavailable, // wallpaper disabled, target unknown, or no candidate images
   };
 
+  [[nodiscard]] const WallpaperInstance* currentInstance() const;
   [[nodiscard]] bool isConnectorKnown(std::string_view connector) const;
   // Persist a resolved image path to a single connector, or to every connected
   // output plus the default when no connector is given.
