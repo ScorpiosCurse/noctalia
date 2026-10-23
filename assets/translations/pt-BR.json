@@ -41,12 +41,13 @@
       "copy": "Copiar a imagem anotada (Ctrl+C)",
       "cursor": "Mostrar o ponteiro capturado com a tela (p)",
       "cursor-capture-failed": "Alternação de ponteiro não disponível: o compositor não pôde prover uma imagem de cursor separada.",
-      "cursor-live": "Congelar a tela primeiro para mudar o ponteiro capturado (F)",
+      "cursor-live": "Congelar a tela primeiro para mudar o ponteiro capturado (Z)",
       "cursor-not-captured": "Alternação de ponteiro não disponível: este compositor não suporta captura separada de cursor.",
       "done": "Aplicar as configurações da captura de tela (Enter)",
-      "fill-off": "Preenchimento da forma: desligado",
-      "fill-on": "Preenchimento da forma: ligado",
-      "freeze": "Congelar a tela sob a tinta (f)",
+      "fill-off": "Preenchimento da forma: desligado (f)",
+      "fill-opaque": "Preenchimento de forma: opaco (f)",
+      "fill-semi": "Preenchimento de forma: semi-transparente (f)",
+      "freeze": "Congelar a tela sob a tinta (z)",
       "move-toolbar": "Arraste para mover a barra de ferramentas",
       "redo": "Refazer (Ctrl+Shift+Z)",
       "save": "Salvar a imagem anotada (Ctrl+S)",
@@ -632,10 +633,12 @@
         "show-login-button": "Botão de Login",
         "show-media": "Mídia",
         "show-password-hint": "Dica de Senha",
+        "show-password-reveal": "Revelar Senha",
         "show-seconds": "Ponteiro dos Segundos",
         "show-session-buttons": "Botões de Sessão",
         "show-unlock-hint": "Dica de Desbloqueio",
         "show-vpn-label": "Mostra Rótulo VPN",
+        "show-wave": "Mostrar Onda",
         "show-weather": "Clima",
         "show-week-numbers": "Exibir Números da Semana",
         "show-when-idle": "Mostrar Quando Ocioso",
@@ -684,7 +687,7 @@
         "calendar": "Calendário",
         "clock": "Relógio",
         "fancy-audio-visualizer": "Vizualizador de Áudio Sofisticado",
-        "label": "Texto",
+        "label": "Rótulo",
         "login-box": "Caixa de Login",
         "media-player": "Reprodutor de Mídia",
         "sticker": "Adesivo",
@@ -1032,6 +1035,7 @@
       "lock-and-suspend": "Bloquear e Suspender",
       "logout": "Sair",
       "reboot": "Reiniciar",
+      "reboot-uefi": "Reiniciar para UEFI",
       "shutdown": "Desligar",
       "suspend": "Suspender"
     },
@@ -1057,6 +1061,8 @@
     "calendar-accounts": {
       "add-title": "Adicionar Conta de Calendário",
       "calendars-label": "Calendários",
+      "client-cert-label": "Certificado de Client (PEM)",
+      "client-key-label": "Chave de Cliente (PEM)",
       "color-label": "Cor",
       "credential-source-file": "Arquivo de Senha",
       "credential-source-keyring": "Chaveiro",
@@ -1306,6 +1312,8 @@
       "merged-user-description": "Combina arquivos de configuração e alterações na interface gráfica em um único arquivo TOML. Os valores padrão predefinidos permanecem implícitos.",
       "merged-user-save-title": "Salvar Configuração de Usuário Mesclada",
       "merged-user-title": "Configuração de Usuário Mesclada (Recomendado)",
+      "privacy-warning-description": "Ambos modos de exportação podem incluir chaves de API, senhas ou outros dados sensíveis armazenados em seu arquivo de configuração, incluindo plugins. Trate arquivos exportados como privados. Revise e remova dados sensíveis antes de compartilhar.",
+      "privacy-warning-title": "Exportações podem conter segredos",
       "title": "Exportar Configuração"
     },
     "idle": {
@@ -1347,6 +1355,7 @@
         "background": "Plano de Fundo",
         "battery": "Bateria",
         "behavior": "Comportamento",
+        "bluetooth": "Bluetooth",
         "borders": "Bordas",
         "brightness": "Brilho",
         "built-in": "Integrado",
@@ -1541,10 +1550,15 @@
       },
       "lockscreen": {
         "transition": {
+          "diamond": "Diamante",
           "disc": "Disco",
           "fade": "Esvanescer",
+          "golden": "Dourado",
           "honeycomb": "Favo de Mel",
+          "melt": "Derretido",
+          "pixel": "Pixel",
           "stripes": "Listras",
+          "vortex": "Vórtice",
           "wipe": "Limpar",
           "zoom": "Zoom"
         }
@@ -1669,10 +1683,15 @@
           "random": "Aleatória"
         },
         "transition": {
+          "diamond": "Diamante",
           "disc": "Disco",
           "fade": "Desvanecer",
+          "golden": "Dourado",
           "honeycomb": "Favo de mel",
+          "melt": "Derretido",
+          "pixel": "Pixel",
           "stripes": "Listras",
+          "vortex": "Vórtice",
           "wipe": "Expurgar",
           "zoom": "Zoom"
         }
@@ -1683,6 +1702,21 @@
           "metric": "Métrica"
         }
       }
+    },
+    "palette-inspector": {
+      "copied": "{value} copiada",
+      "copy-failed": "Não foi possível copiar a cor para a área de transferência.",
+      "copy-hex": "Copiar valor hex",
+      "copy-name": "Copiar nome da cor",
+      "description": "Modelos de cores no modo {mode}.",
+      "empty": "Sem cores correspondentes.",
+      "filter-all": "Todas Cores",
+      "filter-palette": "Paleta",
+      "filter-terminal": "Terminal",
+      "missing": "Indisponível",
+      "search-placeholder": "Procurar por nomes de cores ou valores hex ...",
+      "terminal-number": "{number} · ANSI {index}",
+      "title": "Inspetor de Paleta"
     },
     "plugins": {
       "browse-store": "Navegar Plugins",
@@ -1868,6 +1902,11 @@
           "description": "Ignorar detecção automática de localização",
           "label": "Idioma"
         },
+        "palette-inspector": {
+          "button": "Inspecionar Cores",
+          "description": "Ver nomes de modelos de cores, amostras e valores hex para a paleta ativa",
+          "label": "Inspetor de Paleta"
+        },
         "palette-source": {
           "description": "De onde derivar a paleta de cores",
           "label": "Fonte da Paleta"
@@ -1891,6 +1930,10 @@
         "show-close-buttons": {
           "description": "Mostrar botões de fechar em painéis, lâminas de notificações, popups, diálogos e na janela de configurações",
           "label": "Mostrar botões de Fechar"
+        },
+        "sync-color-scheme": {
+          "description": "Definir a preferência de sistema para mode escuro/claro lido por navegadores e outros apps para seguir o Modo do Tema",
+          "label": "Sincronizar Esquema de Cores do App"
         },
         "theme-mode": {
           "description": "Escolha o modo Escuro, Claro ou Automático baseado na hora do dia; também aplica em apps através de modelos",
@@ -1921,6 +1964,10 @@
       "bar": {
         "auto-hide": {
           "description": "Desligado mantém a barra visível; Ligado a oculta até que você mova o ponteiro para a borda da tela; Inteligente mostra a barra em um espaço de trabalho vazio e a oculta quando há janelas abertas"
+        },
+        "auto-hide-delay": {
+          "description": "Aguardar esta quantidade de milissegundos depois que o ponteiro sair antes de ocultar a barra; 0 oculta imediatamente (somente no modo Ligado)",
+          "label": "Atraso de Auto-Ocultação"
         },
         "background-opacity": {
           "description": "Opacidade do plano de fundo da barra"
@@ -2866,6 +2913,10 @@
           "description": "Permitir volume acima de 100%",
           "label": "Amplificação Extra de Áudio"
         },
+        "bluetooth-connect-when-enabled": {
+          "description": "Conectar dispositivos pareados, de confiança ao ligar o Bluetooth, ao iniciar e depois de retornar de suspensão",
+          "label": "Conectar Dispositivos Ao Ligar o Bluetooth"
+        },
         "calendar": {
           "description": "Mostrar eventos das suas contas de calendários on-line",
           "label": "Calendário"
@@ -3111,7 +3162,7 @@
       },
       "shared": {
         "auto-hide": {
-          "label": "Auto-Esconder"
+          "label": "Auto-Ocultar"
         },
         "background-opacity": {
           "label": "Opacidade do Plano de Fundo"
@@ -3241,6 +3292,10 @@
           "label": "Comando de Launcher Personalizado",
           "placeholder": "$CMD"
         },
+        "niri-overview-close-on-launch": {
+          "description": "Fechar a overview quando uma aplicação for executada do launcher enquanto a overview do Niri estiver aberta",
+          "label": "Fechar para Executar"
+        },
         "niri-overview-type-to-launch": {
           "description": "Abra o launcher ao digitar na visão geral do Niri; utiliza uma pequena superfície de foco do teclado enquanto a visão geral estiver aberta",
           "label": "Digitar para Abrir Launcher"
@@ -3288,6 +3343,10 @@
         "osd-kinds-caffeine": {
           "description": "Exibir um OSD quando o estado da cafeína (inibidor de inatividade) for alterado",
           "label": "Cafeína"
+        },
+        "osd-kinds-custom": {
+          "description": "Mostrar popups OSD personalizados enviador por plugins ou scripts",
+          "label": "Personalizar"
         },
         "osd-kinds-dnd": {
           "description": "Exibir um OSD quando o Não Pertube é alterado",
@@ -3443,6 +3502,14 @@
           "description": "Envia o PNG capturado para um comando do shell em stdin",
           "label": "Pipe para Comando"
         },
+        "screenshot-region-border-width": {
+          "description": "Largura da borda ao redor da região selecionada",
+          "label": "Largura de Borda da Região"
+        },
+        "screenshot-region-dim-opacity": {
+          "description": "Opacidade da área escurecida ao redor da região selecionada",
+          "label": "Opacidade do Escurecimento da Região"
+        },
         "screenshot-region-modifier": {
           "description": "Modificador para mover ou redimensionar uma região selecionada: arraste com o botão esquerdo para mover, arraste com o botão direito para redimensionar a partir dos terços externos (os cantos redimensionam em ambos os eixos). Nenhuma opção (padrão) mantém o comportamento padrão de arrastar para ajustar",
           "label": "Modificador de Movimento/Redimensionamento"
@@ -3458,6 +3525,14 @@
         "screenshot-show-cursor": {
           "description": "Incluir o ponteiro do mouse nas capturas de tela",
           "label": "Mostrar Cursor"
+        },
+        "screenshot-show-region-dimensions": {
+          "description": "Mostrar o emblema de tamanho enquanto redimensiona ou move uma região",
+          "label": "Mostrar Dimensões da Região"
+        },
+        "screenshot-show-region-hint": {
+          "description": "Mostrar a dica de confirmação com atalhos de teclado (Copiar, Salvar, Cancelar) enquanto confirma uma região",
+          "label": "Mostrar Sugestão de Região "
         },
         "screenshot-skip-annotate-on-copy-save": {
           "description": "Copia e Salva na região do overlay é entregue imediatamente; Enter ou Espaço continuam abrindo o editor",
@@ -3487,6 +3562,14 @@
         "time-format": {
           "description": "Formato de hora padrão para a interface do usuário do shell sem configuração própria",
           "label": "Formato da Hora"
+        },
+        "umbriel-audio-provider": {
+          "description": "Compartilhe o espectro de áudio com os efeitos do Umbriel, mesmo sem um widget visualizador",
+          "label": "Prover Áudio para Umbriel"
+        },
+        "umbriel-overview-close-on-launch": {
+          "description": "Fechar a overview quando uma aplicação executa do launcher enquanto a overview do Umbriel está aberta",
+          "label": "Fechar ao Executar"
         },
         "umbriel-overview-type-to-launch": {
           "description": "Abrir o Launcher enquanto digite na Overveiw do Umbriel; utiliza uma pequena superfície de foco de teclado enquanto a Overview está aberta",
@@ -3666,6 +3749,8 @@
       "success": "Redefinição do armazenamento privado bem sucedida"
     },
     "templates": {
+      "documentation": "Documentação",
+      "readme": "Leiame",
       "store": {
         "browse": "Navegar pelos modelos",
         "categories": "Categorias",
@@ -3688,7 +3773,7 @@
         "command-placeholder": "Comando do shell",
         "commands": {
           "annotate": {
-            "description": "Desenhar na tela sobre os aplicativos em execução; pressione F ou o botão Congelar para capturar o fundo",
+            "description": "Desenhar na tela sobre os aplicativos em execução; pressione Z ou o botão Congelar para capturar o fundo",
             "label": "Anotar tela"
           },
           "bar-auto-hide-set": {
@@ -3967,6 +4052,10 @@
             "description": "Habilitar popups OSD",
             "label": "Habilitar OSD"
           },
+          "osd-show": {
+            "description": "Mostrar um popup de OSD personalizado",
+            "label": "Mostrar OSD personalizado"
+          },
           "osd-toggle": {
             "description": "Alternar popups OSD",
             "label": "Alternar OSD"
@@ -4010,6 +4099,10 @@
           "screenshot-region": {
             "description": "Iniciar uma captura de tela de região interativa",
             "label": "Captura de tela de região"
+          },
+          "screenshot-window": {
+            "description": "Capturar a janela focada",
+            "label": "Capturar de janela"
           },
           "session": {
             "description": "Executar uma ação de sessão integrada",
@@ -4736,6 +4829,10 @@
           "description": "Preencha o fundo do widget para mostrar o progresso da reprodução",
           "label": "Mostrar Progresso da Reprodução"
         },
+        "show-running": {
+          "description": "Mostrar janelas em execução que não estão na lista fixada",
+          "label": "Mostrar em Execução"
+        },
         "show-scroll-lock": {
           "description": "Exibe estado do Scroll Lock",
           "label": "Exibir Scroll Lock"
@@ -4759,6 +4856,10 @@
         "show-vpn-label": {
           "description": "Substitui rótulo de rede com rótulo da VPN em modo Substituir; adiciona rótulo VPN próximo ao ícone de VPN no modo Ambos",
           "label": "Mostrar Rótulo VPN"
+        },
+        "show-wave": {
+          "description": "Exibir como uma onda com área preenchida, em vez de barras separadas",
+          "label": "Mostrar Onda"
         },
         "show-when-idle": {
           "description": "Mantenha o visualizador visível mesmo quando nenhum conteúdo estiver sendo reproduzido",

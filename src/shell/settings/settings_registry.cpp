@@ -889,24 +889,11 @@ namespace settings {
         ToggleSetting{cfg.theme.templates.enableBuiltinTemplates}, "theme templates"
     ));
     {
-      const auto availableTemplates = noctalia::theme::availableTemplates();
-      std::vector<SelectOption> templateOptions;
-      templateOptions.reserve(availableTemplates.size());
-      for (const auto& t : availableTemplates) {
-        templateOptions.push_back(
-            SelectOption{
-                .value = t.id,
-                .label = t.displayName,
-                .description = t.category,
-                .tooltip = noctalia::theme::formatTemplateTooltip(t)
-            }
-        );
-      }
       auto e = makeEntry(
           SettingsSection::Templates, "built-in", tr("settings.schema.templates.builtin-ids.label"),
           tr("settings.schema.templates.builtin-ids.description"), {"theme", "templates", "builtin_ids"},
           TemplateGridSetting{
-              .options = std::move(templateOptions),
+              .options = noctalia::theme::availableTemplates(),
               .selectedValues = cfg.theme.templates.builtinIds,
               .emptyText = tr("settings.schema.templates.builtin-ids.empty"),
           },
@@ -1619,6 +1606,11 @@ namespace settings {
         tr("settings.schema.panels.home-session-button.description"), {"control_center", "show_session_button"},
         ToggleSetting{cfg.controlCenter.showSessionButton}, "session button show hide"
     ));
+    entries.push_back(makeEntry(
+        SettingsSection::ControlCenter, "home", tr("settings.schema.panels.home-circular-avatar.label"),
+        tr("settings.schema.panels.home-circular-avatar.description"), {"control_center", "circular_avatar"},
+        ToggleSetting{cfg.controlCenter.circularAvatar}, "avatar profile picture circle radius roundness"
+    ));
 
     // Desktop
     entries.push_back(makeEntry(
@@ -2108,6 +2100,38 @@ namespace settings {
         tr("settings.schema.shell.screenshot-show-cursor.description"), {"shell", "screenshot", "show_cursor"},
         ToggleSetting{cfg.shell.screenshot.showCursor}, "screenshot capture show cursor pointer mouse"
     ));
+    entries.push_back(makeEntry(
+        SettingsSection::Screenshot, "screenshot-capture",
+        tr("settings.schema.shell.screenshot-region-border-width.label"),
+        tr("settings.schema.shell.screenshot-region-border-width.description"),
+        {"shell", "screenshot", "region_border_width"},
+        sliderFor(
+            cfg.shell.screenshot.regionBorderWidth, noctalia::config::schema::kScreenshotRegionBorderWidthRange, false
+        ),
+        "screenshot region border outline width stroke"
+    ));
+    entries.push_back(makeEntry(
+        SettingsSection::Screenshot, "screenshot-capture",
+        tr("settings.schema.shell.screenshot-region-dim-opacity.label"),
+        tr("settings.schema.shell.screenshot-region-dim-opacity.description"),
+        {"shell", "screenshot", "region_dim_opacity"},
+        sliderFor(cfg.shell.screenshot.regionDimOpacity, noctalia::config::schema::kUnitRange, false),
+        "screenshot region dim opacity darkness overlay"
+    ));
+    entries.push_back(makeEntry(
+        SettingsSection::Screenshot, "screenshot-capture",
+        tr("settings.schema.shell.screenshot-show-region-hint.label"),
+        tr("settings.schema.shell.screenshot-show-region-hint.description"),
+        {"shell", "screenshot", "show_region_hint"}, ToggleSetting{cfg.shell.screenshot.showRegionHint},
+        "screenshot region confirm hint keybind copy save cancel"
+    ));
+    entries.push_back(makeEntry(
+        SettingsSection::Screenshot, "screenshot-capture",
+        tr("settings.schema.shell.screenshot-show-region-dimensions.label"),
+        tr("settings.schema.shell.screenshot-show-region-dimensions.description"),
+        {"shell", "screenshot", "show_region_dimensions"}, ToggleSetting{cfg.shell.screenshot.showRegionDimensions},
+        "screenshot region dimensions size tooltip badge"
+    ));
 
     entries.push_back(makeEntry(
         SettingsSection::Screenshot, "screenshot-annotation", tr("settings.schema.shell.screenshot-annotate.label"),
@@ -2145,7 +2169,7 @@ namespace settings {
     entries.push_back(makeEntry(
         SettingsSection::Screenshot, "screenshot-output", tr("settings.schema.shell.screenshot-save-to-file.label"),
         tr("settings.schema.shell.screenshot-save-to-file.description"), {"shell", "screenshot", "save_to_file"},
-        ToggleSetting{cfg.shell.screenshot.saveToFile}, "screenshot capture save png file"
+        ToggleSetting{cfg.shell.screenshot.saveToFile}, "screenshot capture save file"
     ));
     {
       auto e = makeEntry(
@@ -2174,6 +2198,22 @@ namespace settings {
           },
           "screenshot capture filename pattern strftime", true
       );
+      entries.push_back(std::move(e));
+    }
+    entries.push_back(makeEntry(
+        SettingsSection::Screenshot, "screenshot-output", tr("settings.schema.shell.screenshot-format.label"),
+        tr("settings.schema.shell.screenshot-format.description"), {"shell", "screenshot", "format"},
+        enumSelect(kScreenshotFormats, cfg.shell.screenshot.format),
+        "screenshot capture save file format png jpeg jpg webp jxl jpeg-xl"
+    ));
+    {
+      auto e = makeEntry(
+          SettingsSection::Screenshot, "screenshot-output", tr("settings.schema.shell.screenshot-quality.label"),
+          tr("settings.schema.shell.screenshot-quality.description"), {"shell", "screenshot", "quality"},
+          sliderFor(cfg.shell.screenshot.quality, noctalia::config::schema::kScreenshotQualityRange, true),
+          "screenshot capture save file quality compression lossless jpeg webp jxl"
+      );
+      e.visibleWhen = [](const Config& c) { return c.shell.screenshot.format != ScreenshotFormat::Png; };
       entries.push_back(std::move(e));
     }
     entries.push_back(makeEntry(
@@ -2437,6 +2477,11 @@ namespace settings {
         tr("settings.schema.shell.osd-kinds-keyboard-backlight.description"), {"osd", "kinds", "keyboard_backlight"},
         ToggleSetting{cfg.osd.kinds.keyboardBacklight}, "hud overlay keyboard backlight kbd"
     ));
+    entries.push_back(makeEntry(
+        SettingsSection::Osd, "kinds", tr("settings.schema.shell.osd-kinds-custom.label"),
+        tr("settings.schema.shell.osd-kinds-custom.description"), {"osd", "kinds", "custom"},
+        ToggleSetting{cfg.osd.kinds.custom}, "hud overlay plugin custom script"
+    ));
     // Gate every OSD entry after the master toggle on osd.enabled, preserving any per-entry visibility.
     for (std::size_t i = osdGatedStart; i < entries.size(); ++i) {
       SettingVisibility prev = std::move(entries[i].visibleWhen);
@@ -2529,6 +2574,14 @@ namespace settings {
             "niri overview type launch launcher search keyboard focus"
         ));
       }
+      if (env.niriOverviewCloseOnLaunchSupported) {
+        entries.push_back(makeEntry(
+            SettingsSection::Niri, "overview", tr("settings.schema.shell.niri-overview-close-on-launch.label"),
+            tr("settings.schema.shell.niri-overview-close-on-launch.description"),
+            {"shell", "niri_overview_close_on_launch_enabled"},
+            ToggleSetting{cfg.shell.niriOverviewCloseOnLaunchEnabled}, "niri overview close app launch launcher"
+        ));
+      }
       if (env.niriBackdropSupported) {
         entries.push_back(makeEntry(
             SettingsSection::Niri, "backdrop", tr("settings.schema.shared.enabled.label"),
@@ -2561,6 +2614,14 @@ namespace settings {
           {"shell", "umbriel_overview_type_to_launch_enabled"},
           ToggleSetting{cfg.shell.umbrielOverviewTypeToLaunchEnabled},
           "umbriel overview type launch launcher search keyboard focus"
+      ));
+    }
+    if (env.umbrielOverviewCloseOnLaunchSupported) {
+      entries.push_back(makeEntry(
+          SettingsSection::Umbriel, "overview", tr("settings.schema.shell.umbriel-overview-close-on-launch.label"),
+          tr("settings.schema.shell.umbriel-overview-close-on-launch.description"),
+          {"shell", "umbriel_overview_close_on_launch_enabled"},
+          ToggleSetting{cfg.shell.umbrielOverviewCloseOnLaunchEnabled}, "umbriel overview close app launch launcher"
       ));
     }
 
@@ -3082,6 +3143,7 @@ namespace settings {
         tr("settings.schema.services.shell-sounds.description"), {"audio", "enable_sounds"},
         ToggleSetting{cfg.audio.enableSounds}, "sound"
     ));
+    const std::size_t soundsGatedStart = entries.size();
     entries.push_back(makeEntry(
         SettingsSection::Services, "audio", tr("settings.schema.services.volume-sounds.label"),
         tr("settings.schema.services.volume-sounds.description"), {"audio", "enable_volume_sounds"},
@@ -3119,6 +3181,12 @@ namespace settings {
         tr("settings.schema.services.sound-theme.description"), {"audio", "sound_theme"},
         SelectSetting{std::move(soundThemeOptions), cfg.audio.soundTheme}, "sound theme"
     ));
+    for (std::size_t i = soundsGatedStart; i < entries.size(); ++i) {
+      SettingVisibility prev = std::move(entries[i].visibleWhen);
+      entries[i].visibleWhen = prev
+          ? SettingVisibility{[prev = std::move(prev)](const Config& c) { return c.audio.enableSounds && prev(c); }}
+          : SettingVisibility{[](const Config& c) { return c.audio.enableSounds; }};
+    }
     entries.push_back(makeEntry(
         SettingsSection::Services, "brightness", tr("settings.schema.services.ddcutil.label"),
         env.ddcutilAvailable ? tr("settings.schema.services.ddcutil.description")
@@ -3135,6 +3203,12 @@ namespace settings {
         SettingsSection::Services, "brightness", tr("settings.schema.services.sync-monitor-brightness.label"),
         tr("settings.schema.services.sync-monitor-brightness.description"), {"brightness", "sync_all_monitors"},
         ToggleSetting{.checked = cfg.brightness.syncBrightnessOfAllMonitors}, "monitor brightness"
+    ));
+    entries.push_back(makeEntry(
+        SettingsSection::Services, "bluetooth", tr("settings.schema.services.bluetooth-connect-when-enabled.label"),
+        tr("settings.schema.services.bluetooth-connect-when-enabled.description"),
+        {"bluetooth", "connect_when_enabled"}, ToggleSetting{cfg.bluetooth.connectWhenEnabled},
+        "bluetooth reconnect connect trusted paired devices startup resume"
     ));
     entries.push_back(makeEntry(
         SettingsSection::Services, "media", tr("settings.schema.services.mpris-blacklist.label"),
@@ -3771,6 +3845,16 @@ namespace settings {
           section, "widget-list", tr("settings.schema.bar.end-widgets.label"),
           tr("settings.schema.bar.end-widgets.description"), path("end"), ListSetting{.items = bar.endWidgets}, "right"
       ));
+      {
+        auto e = makeEntry(
+            section, "dead-zone", tr("settings.schema.bar.dead-zone-click-through.label"),
+            tr("settings.schema.bar.dead-zone-click-through.description"),
+            std::vector<std::string>{"bar", bar.name, "dead_zone", "click_through"},
+            ToggleSetting{bar.deadZone.clickThrough}, "bar empty margin dead zone click through pass input region"
+        );
+        e.visibleWhen = [autoHideOn](const Config& c) { return !autoHideOn(c); };
+        entries.push_back(std::move(e));
+      }
       // One row per gesture, from the same closed set widget actions use. An unset row shows the
       // built-in default as its placeholder, so "empty" never reads as "does nothing".
       for (const auto gesture : noctalia::bar::allGestures()) {
@@ -4139,6 +4223,19 @@ namespace settings {
             tr("settings.schema.bar.end-widgets.description"), monitorPath("end"),
             ListSetting{.items = ovr.endWidgets.value_or(bar.endWidgets)}, "right"
         ));
+        {
+          std::vector<std::string> clickThroughPath = root;
+          clickThroughPath.emplace_back("dead_zone");
+          clickThroughPath.emplace_back("click_through");
+          auto e = makeEntry(
+              section, "dead-zone", tr("settings.schema.bar.dead-zone-click-through.label"),
+              tr("settings.schema.bar.dead-zone-click-through.description"), std::move(clickThroughPath),
+              ToggleSetting{ovr.deadZone.clickThrough.value_or(bar.deadZone.clickThrough)},
+              "bar empty margin dead zone click through pass input region"
+          );
+          e.visibleWhen = [monitorAutoHideOn](const Config& c) { return !monitorAutoHideOn(c); };
+          entries.push_back(std::move(e));
+        }
         for (const auto gesture : noctalia::bar::allGestures()) {
           const std::string key(noctalia::bar::gestureConfigKey(gesture));
           std::vector<std::string> gesturePath = root;
